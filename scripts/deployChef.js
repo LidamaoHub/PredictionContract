@@ -5,13 +5,13 @@ async function main() {
  
   await hre.run('compile');
 
-  const LDM = await hre.ethers.getContractFactory("contracts/ERC20.sol:LDM");
-  const ldm = await LDM.deploy();
+  const CHEF = await hre.ethers.getContractFactory("contracts/PredictChef.sol:PredictChef");
+  const chef = await CHEF.deploy();
   
 
-  await ldm.deployed();
+  await chef.deployed();
 
-  console.log("The test coin LDM deployed to:", ldm.address);
+  console.log("Deploy the predict chef to:", chef.address);
 }
 
 main()

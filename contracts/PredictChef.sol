@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Prediction.sol";
 
-contract History is Ownable {
+contract PredictChef is Ownable {
     string public name = "PredictChef";
     // 仲裁上线
     // 仲裁结束
