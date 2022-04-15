@@ -240,6 +240,7 @@ contract PredictionContract {
         return sideAShares + sideBShares;
     }
 
+// TODO 重大问题,赢家分走是否越早越多
     function claim() external {
         require(!claimedList[msg.sender], "You Have Claimed");
         require(arbitrated, "Vote Not Over");

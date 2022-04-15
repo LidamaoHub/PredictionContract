@@ -10,10 +10,16 @@ contract PredictChef is Ownable {
     // 仲裁结束
     // 中间人列表
 
-    uint256 _nextId = 0;
+    uint256 public PredictId = 0;
     mapping(uint256 => address) public PredictionList;
 
     constructor() {}
+
+    event Created(
+        address indexed addr,
+        uint256 indexed predId,
+        address predAddress
+    );
 
     // 简易版:个人签名,直接上列表
     function CreatePrediction(
@@ -23,8 +29,8 @@ contract PredictChef is Ownable {
         uint8 _coinType,
         address coinAddress,
         uint256 _endTime
-    ) external  {
-        uint256 predictionId = NextId();
+    ) external {
+        require(_sharePrice > 0, "SharePrice>0");
         address predictionAddress = address(
             new PredictionContract(
                 _metaHash,
@@ -36,13 +42,9 @@ contract PredictChef is Ownable {
                 _endTime
             )
         );
-
-        PredictionList[predictionId] = predictionAddress;
-        _nextId = _nextId + 1;
+        uint256 predictionId = PredictId;
+        PredictionList[PredictId] = predictionAddress;
+        PredictId = PredictId + 1;
+        emit Created(msg.sender, predictionId, predictionAddress);
     }
-
-    function NextId() public view returns (uint256) {
-        return _nextId + 1;
-    }
-
 }
