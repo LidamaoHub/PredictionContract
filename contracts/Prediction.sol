@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import "hardhat/console.sol";
 
 contract PredictionContract {
     mapping(address => uint256) public sideA;
@@ -140,8 +139,6 @@ contract PredictionContract {
     }
 
     function startVoting() external onlyAdmin {
-        console.log(voteState);
-
         require(voteState == 0, "Has Been Started");
         voteState = 1;
     }

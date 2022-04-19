@@ -1,24 +1,41 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Prediction.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract PredictChef is Ownable {
+
+contract PredictChef {
     string public name = "PredictChef";
     // 仲裁上线
     // 仲裁结束
     // 中间人列表
 
     uint256 public PredictId = 0;
-    mapping(uint256 => address) public PredictionList;
+    mapping(uint256 => Prediction) public PredictionList;
+    address public manager;
 
-    constructor() {}
+    constructor() {
+        manager = msg.sender;
+    }
 
+    struct Prediction {
+        bool show;
+        address addr;
+    }
+    modifier onlyOwner() {
+        require(address(msg.sender) == manager, "Only Owner");
+        _;
+    }
     event Created(
         address indexed addr,
         uint256 indexed predId,
         address predAddress
+    );
+    event SwitchShowType(
+        uint256 indexed predId,
+        address predAddress,
+        bool showType
     );
 
     // 简易版:个人签名,直接上列表
@@ -43,8 +60,30 @@ contract PredictChef is Ownable {
             )
         );
         uint256 predictionId = PredictId;
-        PredictionList[PredictId] = predictionAddress;
+        Prediction memory pred = Prediction(false, predictionAddress);
+        PredictionList[PredictId] = pred;
         PredictId = PredictId + 1;
         emit Created(msg.sender, predictionId, predictionAddress);
+    }
+
+    function setShowType(uint256 _predictId, bool _type) external onlyOwner {
+        require(PredictionList[_predictId].addr != address(0), "not in list");
+        PredictionList[_predictId].show = _type;
+        emit SwitchShowType(_predictId,PredictionList[_predictId].addr,_type);
+    }
+
+    function getPredict(uint256 _predictId) public view  returns (address )  {
+        require(PredictionList[_predictId].addr != address(0), "not in list");
+        if(PredictionList[_predictId].show){
+            return PredictionList[_predictId].addr;
+        }else{
+            return address(0);
+        }
+    }
+
+    function withdraw(address tokenAddress) external onlyOwner{
+        IERC20 token = IERC20(tokenAddress);
+        uint256 balance = token.balanceOf(address(this));
+        token.transfer(manager, balance);
     }
 }
