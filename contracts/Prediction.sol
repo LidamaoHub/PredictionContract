@@ -38,7 +38,7 @@ contract PredictionContract {
     uint8 public voteState = 0; //0未发布,1投票中,2仲裁中,3结束
     uint256 public maxShares = 200;
     uint256 public endTime;
-
+string public name = "Prediction";
     //需要加一个时间限制模块
     //creator应该是chef,用来分红
     //admin应该是创建者/多签合约,用来实际控制

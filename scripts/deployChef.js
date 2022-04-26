@@ -1,17 +1,20 @@
 
 const hre = require("hardhat");
+const { ethers, upgrades } = require("hardhat");
 
 async function main() {
  
   await hre.run('compile');
 
+  let address = "0xC9a43158891282A2B1475592D5719c001986Aaec"
   const CHEF = await hre.ethers.getContractFactory("contracts/PredictChef.sol:PredictChef");
-  const chef = await CHEF.deploy();
+  const upgraded = await upgrades.upgradeProxy(address,CHEF);
+  // const upgraded = await upgrades.deployProxy(CHEF);
   
 
-  await chef.deployed();
+  await upgraded.deployed();
 
-  console.log("Deploy the predict chef to:", chef.address);
+  console.log("Deploy the predict chef to:", upgraded.address);
 }
 
 main()

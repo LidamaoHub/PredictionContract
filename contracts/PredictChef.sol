@@ -6,18 +6,20 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
 contract PredictChef {
-    string public name = "PredictChef";
     // 仲裁上线
     // 仲裁结束
     // 中间人列表
 
-    uint256 public PredictId = 0;
+    uint256 public PredictId ;
     mapping(uint256 => Prediction) public PredictionList;
     address public manager;
 
-    constructor() {
+
+    function initialize()  public {
         manager = msg.sender;
-    }
+        PredictId = 0;
+     }
+   
 
     struct Prediction {
         bool show;
@@ -60,7 +62,7 @@ contract PredictChef {
             )
         );
         uint256 predictionId = PredictId;
-        Prediction memory pred = Prediction(false, predictionAddress);
+        Prediction memory pred = Prediction(true, predictionAddress);
         PredictionList[PredictId] = pred;
         PredictId = PredictId + 1;
         emit Created(msg.sender, predictionId, predictionAddress);
